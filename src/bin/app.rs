@@ -37,8 +37,6 @@ mod app {
         let (leds, probe_usb, dap_handler, target_vcc, translator_power, target_power) =
             setup(cx.device, cx.core, cx.local.usb_bus, cx.local.delay);
 
-        voltage_translator_control::spawn().ok();
-
         #[cfg(feature = "defmt-bbq")]
         log_pump::spawn().ok();
 

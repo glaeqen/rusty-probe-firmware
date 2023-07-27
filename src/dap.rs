@@ -48,7 +48,7 @@ impl core::fmt::Debug for Context {
 impl Context {
     fn swdio_to_input(&mut self) {
         defmt::trace!("SWDIO -> input");
-        self.dir_swdio.set_low().ok();
+        self.dir_swdio.set_high().ok();
         self.swdio.into_pull_up_input();
     }
 
@@ -56,12 +56,12 @@ impl Context {
         defmt::trace!("SWDIO -> output");
         self.swdio.into_push_pull_output();
         self.swdio.set_high().ok();
-        self.dir_swdio.set_high().ok();
+        self.dir_swdio.set_low().ok();
     }
 
     fn swclk_to_input(&mut self) {
         defmt::trace!("SWCLK -> input");
-        self.dir_swclk.set_low().ok();
+        self.dir_swclk.set_high().ok();
         self.swclk.into_pull_up_input();
     }
 
@@ -69,7 +69,7 @@ impl Context {
         defmt::trace!("SWCLK -> output");
         self.swclk.into_push_pull_output();
         self.swclk.set_high().ok();
-        self.dir_swclk.set_high().ok();
+        self.dir_swclk.set_low().ok();
     }
 
     fn from_pins(

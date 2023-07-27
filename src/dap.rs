@@ -49,7 +49,7 @@ impl Context {
     fn swdio_to_input(&mut self) {
         defmt::trace!("SWDIO -> input");
         self.dir_swdio.set_low().ok();
-        self.swdio.into_pull_down_input();
+        self.swdio.into_pull_up_input();
     }
 
     fn swdio_to_output(&mut self) {
@@ -62,7 +62,7 @@ impl Context {
     fn swclk_to_input(&mut self) {
         defmt::trace!("SWCLK -> input");
         self.dir_swclk.set_low().ok();
-        self.swclk.into_pull_down_input();
+        self.swclk.into_pull_up_input();
     }
 
     fn swclk_to_output(&mut self) {
@@ -84,14 +84,9 @@ impl Context {
         dir_swdio.into_push_pull_output();
         dir_swclk.into_push_pull_output();
 
-        dir_swdio.set_low().ok();
-        dir_swclk.set_low().ok();
-        defmt::trace!("SWCLK -> input");
-        defmt::trace!("SWDIO -> input");
-
         let max_frequency = 100_000;
         let half_period_ticks = cpu_frequency / max_frequency / 2;
-        Context {
+        let mut context = Context {
             max_frequency,
             cpu_frequency,
             cycles_per_us: cpu_frequency / 1_000_000,
@@ -102,7 +97,9 @@ impl Context {
             nreset,
             dir_swdio,
             dir_swclk,
-        }
+        };
+        context.high_impedance_mode();
+        context
     }
 }
 
@@ -203,7 +200,7 @@ impl swj::Dependencies<Swd, Jtag> for Context {
     fn high_impedance_mode(&mut self) {
         self.swdio_to_input();
         self.swclk_to_input();
-        self.nreset.into_floating_disabled();
+        self.nreset.into_pull_up_input();
     }
 }
 
@@ -247,7 +244,7 @@ impl From<Context> for Swd {
         // Maybe this should go to some `Swd::new`
         value.swdio_to_output();
         value.swclk_to_output();
-        value.nreset.into_floating_disabled();
+        value.nreset.into_pull_up_input();
         Self(value)
     }
 }

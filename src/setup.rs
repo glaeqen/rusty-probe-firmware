@@ -93,11 +93,11 @@ pub fn setup(
     let sio = Sio::new(pac.SIO);
     let pins = Pins::new(pac.IO_BANK0, pac.PADS_BANK0, sio.gpio_bank0, &mut resets);
 
-    let mut led_green = pins.gpio27.into_push_pull_output();
+    let mut led_green = pins.gpio29.into_push_pull_output();
     led_green.set_high().ok();
     let mut led_red = pins.gpio28.into_push_pull_output();
     led_red.set_high().ok();
-    let mut led_blue = pins.gpio29.into_push_pull_output();
+    let mut led_blue = pins.gpio27.into_push_pull_output();
     led_blue.set_high().ok();
 
     // Enable ADC
